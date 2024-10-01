@@ -1,4 +1,5 @@
-from requests import Response
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 # 간단한 INDEX 페이지를 보여주는 뷰
 class IndexView(APIView):
