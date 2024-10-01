@@ -21,5 +21,6 @@ from cassette import views
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('admin/', admin.site.urls),
-    path('account/', include('account.urls'))
+    path('account/', include('account.urls')),
+    path('cassette/', include('cassette.urls'))
 ]
