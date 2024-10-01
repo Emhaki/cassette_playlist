@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from cassette_app.cassette import views
 
 urlpatterns = [
+    path('', views.IndexView.as_view(), name='index'),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls'))
 ]
