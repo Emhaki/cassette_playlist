@@ -1,11 +1,9 @@
-from django.db import models
-
-# Create your models here.
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
 class PlyUser(models.Model):
-    id = models.CharField(primary_key=True, auto_created=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     email = models.EmailField(max_length=255, null=True, blank=True)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)

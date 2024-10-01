@@ -40,12 +40,12 @@ INSTALLED_APPS = [
 
     'cassette',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
 
     # 로그인
-    'account'
-    'django.contrib.sites'
-    'social_django'
+    'account',
+    'django.contrib.sites',
+    'social_django',
 ]
 
 SITE_ID = 1  # Django의 사이트 프레임워크 사용 시 필요
@@ -60,17 +60,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
-
-
-# 카카오 API 키
-KAKAO_REST_API_KEY = '카카오 REST API 키'
-
-# 카카오 토큰 요청 및 사용자 정보 URL
-KAKAO_ACCESS_TOKEN_URL = 'https://kauth.kakao.com/oauth/token'
-KAKAO_USER_INFO_URL = 'https://kapi.kakao.com/v2/user/me'
-
-# 로그인 및 콜백 URL 설정 (카카오 Redirect URI와 일치해야 함)
-KAKAO_REDIRECT_URI = 'http://localhost:8000/kakao/callback/'
 
 
 MIDDLEWARE = [

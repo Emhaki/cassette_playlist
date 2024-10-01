@@ -1,6 +1,6 @@
 import os, requests
 from django.shortcuts import redirect, render
-from cassette_app.account.serializers import KakaoLoginSerializer
+from account.serializers import KakaoLoginSerializer
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -48,12 +48,14 @@ class KakaoLoginView(APIView):
             email = kakao_account.get('email', None)
             nickname = kakao_account.get('profile', {}).get('nickname', None)
 
-            # 기존 사용자 확인 또는 새 사용자 생성
-            user, created = PlyUser.objects.get_or_create(
-                username=f'kakao_{kakao_id}', # 랜덤으로 생성할지 고민해보기
-                defaults={'email': email, 'first_name': nickname}
-            )
 
+            user, created = PlyUser.objects.get_or_create(
+                id=f'kakao_{kakao_id}',  # PlyUser의 id 필드 사용
+                defaults={
+                    'email': email,       # 카카오에서 받은 이메일
+                    'nickname': nickname, # 카카오에서 받은 닉네임
+                }
+)
             # JWT 토큰 발급
             token = jwt.encode({'id': user.id}, SECRET_KEY, algorithm='HS256')
 
