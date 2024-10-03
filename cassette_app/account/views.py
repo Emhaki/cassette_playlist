@@ -21,8 +21,10 @@ KAKAO_ACCESS_TOKEN_URL = 'https://kauth.kakao.com/oauth/token'
 KAKAO_USER_INFO_URL = 'https://kapi.kakao.com/v2/user/me'
 
 # 로그인 및 콜백 URL 설정 (카카오 Redirect URI와 일치해야 함)
-KAKAO_REDIRECT_URI = 'http://223.130.130.103/account/kakao/callback/'
+# KAKAO_REDIRECT_URI = 'http://223.130.130.103/account/kakao/callback/'
 # KAKAO_REDIRECT_URI = 'http://127.0.0.1:8000//account/kakao/callback/'
+KAKAO_REDIRECT_URI = 'http://www.perply.site//account/kakao/callback/'
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 def kakao_login(request):
