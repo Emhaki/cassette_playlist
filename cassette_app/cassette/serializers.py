@@ -2,6 +2,7 @@ from rest_framework import serializers
 from account.models import PlyUser
 from .models import Playlist, RecommendedPlaylist
 
+
 class PlyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlyUser

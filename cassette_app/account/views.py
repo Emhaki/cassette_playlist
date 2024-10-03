@@ -1,11 +1,11 @@
 import os, requests
-from django.shortcuts import redirect, render
-from account.serializers import KakaoLoginSerializer
-from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import KakaoLoginSerializer
+from cassette.models import Playlist
+
 from .models import PlyUser  # 사용자 모델
 from dotenv import load_dotenv
 import jwt
@@ -71,6 +71,20 @@ class KakaoCallbackView(APIView):
     )
         # JWT 토큰 발급
         token = jwt.encode({'id': user.id}, SECRET_KEY, algorithm='HS256')
+        
+        if not Playlist.objects.filter(user_id=user):
+            # 5개의 기본 플레이리스트 생성
+            playlist_titles = [
+                "당신이 떠올리는 그 사람의 풍경, 이 노래로 표현할 수 있다면 어떤 곡일까요?",
+                "당신의 마음속 이야기를 이 노래로 전할 수 있다면, 어떤 곡일까요?",
+                "만약 이 노래가 그 사람을 위한 편지라면, 어떤 마음을 담고 싶나요?",
+                "그 사람과 함께 듣고 싶은 노래가 있다면, 어떤 곡이 떠오르나요?",
+                "당신이 전하고 싶은 마음, 이 노래로 대신할 수 있다면 어떤 곡일까요?"
+            ]
+
+            # 처음 회원가입 후 5개 플레이리스트 생성
+            for title in playlist_titles:
+                Playlist.objects.create(user_id=user, playlist_title=title)  # user 대신 user_id 사용
 
         data = {
             'token': token,
@@ -83,6 +97,28 @@ class KakaoCallbackView(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
+class UpdateNicknameView(APIView):
+    # permission_classes = [IsAuthenticated]  # 인증이 필요한 경우 사용
+
+    def patch(self, request, uuid):
+        # uuid로 사용자를 조회
+        user = get_object_or_404(PlyUser, uuid=uuid)
+
+        # request.data에서 닉네임 가져오기
+        new_nickname = request.data.get("nickname")
+        if not new_nickname:
+            return Response({"error": "닉네임이 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 닉네임 업데이트
+        user.nickname = new_nickname
+        user.save()
+
+        # 응답 반환
+        return Response({
+            "message": "닉네임이 성공적으로 변경되었습니다.",
+            "nickname": user.nickname
+        }, status=status.HTTP_200_OK)
+        
 
 
 
