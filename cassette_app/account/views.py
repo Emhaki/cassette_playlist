@@ -126,15 +126,22 @@ class UpdateNicknameView(APIView):
         if not new_nickname:
             return Response({"error": "닉네임이 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
         
-        # 닉네임 업데이트
-        user.nickname = new_nickname
-        user.save()
+        if PlyUser.objects.filter(nickname=new_nickname).exists():
+            return Response({
+            "error": "닉네임이 중복되었습니다.",
+            "nickname": new_nickname
+        }, status=status.HTTP_400_BAD_REQUEST)
+        
+        else:
+            # 닉네임 업데이트
+            user.nickname = new_nickname
+            user.save()
 
-        # 응답 반환
-        return Response({
-            "message": "닉네임이 성공적으로 변경되었습니다.",
-            "nickname": user.nickname
-        }, status=status.HTTP_200_OK)
+            # 응답 반환
+            return Response({
+                "message": "닉네임이 성공적으로 변경되었습니다.",
+                "nickname": user.nickname
+            }, status=status.HTTP_200_OK)
 
 
 # class KakaoLogoutView(APIView):
