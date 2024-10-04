@@ -6,6 +6,7 @@ def generate_short_uuid():
 
 class PlyUser(models.Model):
     uuid = models.CharField(max_length=6, default=generate_short_uuid, editable=False, unique=True)
+    kakao_id = models.CharField(max_length=255, unique=True, null=True, blank=True)  # 카카오 고유 ID 저장
     email = models.EmailField(max_length=255, null=True, blank=True)
     nickname = models.CharField(max_length=255, null=True, blank=True)
     is_admin = models.BooleanField(default=False)

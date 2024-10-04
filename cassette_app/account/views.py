@@ -60,17 +60,15 @@ class KakaoCallbackView(APIView):
         # email = kakao_account.get('email', None)
         nickname = kakao_account.get('profile', {}).get('nickname', None)
 
+        # 유저가 존재하는지 확인하고 없으면 생성
         user, created = PlyUser.objects.get_or_create(
+            kakao_id=profile_json.get('id'),  # 카카오 id를 사용해서 고유한 유저 식별
             defaults={
                 "nickname": nickname,
                 "profile_image_url": f"{profile_image}",
             }
-        #     id=f'kakao_{kakao_id}',  # PlyUser의 id 필드 사용
-        #     defaults={
-        #         'email': email,       # 카카오에서 받은 이메일
-        #         'nickname': nickname, # 카카오에서 받은 닉네임
-        # }
-    )
+        )
+
         # JWT 토큰 발급
         token = jwt.encode({'id': user.id}, SECRET_KEY, algorithm='HS256')
         
