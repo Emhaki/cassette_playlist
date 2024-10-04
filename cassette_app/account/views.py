@@ -54,7 +54,7 @@ class KakaoCallbackView(APIView):
         )
 
         profile_json = profile_request.json()
-
+        print(profile_json)
         kakao_account = profile_json.get('kakao_account')
         profile_image = kakao_account.get('profile', {}).get('profile_image_url', None)
         # email = kakao_account.get('email', None)
