@@ -1,4 +1,5 @@
 import os, requests
+import random
 from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -54,23 +55,39 @@ class KakaoCallbackView(APIView):
         )
 
         profile_json = profile_request.json()
-        print(profile_json)
+        
         kakao_account = profile_json.get('kakao_account')
         profile_image = kakao_account.get('profile', {}).get('profile_image_url', None)
         # email = kakao_account.get('email', None)
         nickname = kakao_account.get('profile', {}).get('nickname', None)
-
+        
+        # 각 카테고리의 리스트
+        genres = [
+            "팝", "록", "재즈", "힙합", "EDM", "R&B", "국악", "트롯", "메탈", "레게", "펑크", "인디", "민요", "가요"
+        ]
+        actions = [
+            "듣는", "즐기는", "감상하는", "부르는", "배우는", "연주하는", "작곡하는", "작사하는", 
+            "노래하는", "공연하는", "열창하는", "에빠진", "연습하는", "녹음하는"
+        ]
+        animals = [
+            "개", "곰", "닭", "판다", "여우", "토끼", "돼지", "오리", "사슴", "하마", "기린", 
+            "치타", "거북", "상어", "사자", "악어", "염소", "오리", "수달", "참새", "제비", 
+            "늑대", "펭귄", "자라", "물개", "표범", "타조", "노루", "산양", "불곰"
+        ]
+        # 중복되지 않는 닉네임을 찾을 때까지 반복
+        while True:
+            random_nickname = random.choice(genres) + random.choice(actions) + random.choice(animals)
+            if not PlyUser.objects.filter(nickname=random_nickname).exists():
+                break
+        
         # 유저가 존재하는지 확인하고 없으면 생성
         user, created = PlyUser.objects.get_or_create(
             kakao_id=profile_json.get('id'),  # 카카오 id를 사용해서 고유한 유저 식별
             defaults={
-                "nickname": nickname,
+                "nickname": random_nickname,
                 "profile_image_url": f"{profile_image}",
             }
         )
-
-        # JWT 토큰 발급
-        token = jwt.encode({'id': user.id}, SECRET_KEY, algorithm='HS256')
         
         if not Playlist.objects.filter(user_id=user):
             # 5개의 기본 플레이리스트 생성
@@ -87,7 +104,7 @@ class KakaoCallbackView(APIView):
                 Playlist.objects.create(user_id=user, playlist_title=title)  # user 대신 user_id 사용
 
         data = {
-            'token': token,
+            'token': access_token,
             'user_id': user.id,
             'user_uuid': user.uuid,
             'nickname': nickname,
@@ -108,7 +125,7 @@ class UpdateNicknameView(APIView):
         new_nickname = request.data.get("nickname")
         if not new_nickname:
             return Response({"error": "닉네임이 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
-
+        
         # 닉네임 업데이트
         user.nickname = new_nickname
         user.save()
@@ -118,7 +135,21 @@ class UpdateNicknameView(APIView):
             "message": "닉네임이 성공적으로 변경되었습니다.",
             "nickname": user.nickname
         }, status=status.HTTP_200_OK)
+
+
+# class KakaoLogoutView(APIView):
+#     def kakao_logout(request):
+#         # REST_API_KEY = getattr(settings, 'KAKAO_REST_KEY')
+#         # LOGOUT_REDIRECT_URI = getattr(settings, 'KAKAO_REDIRECT_URI')
+
+#         # 로그아웃 
+#         # headers = {"Authorization": f'Bearer {access_token}'}
+#         logout_response = requests.post('https://kapi.kakao.com/v1/user/logout', headers=headers)
+#         print(logout_response.json())
         
+#         # 카카오계정과 함께 로그아웃
+#         logout_response = requests.get(f'https://kauth.kakao.com/oauth/logout?client_id=${REST_API_KEY}&logout_redirect_uri=${LOGOUT_REDIRECT_URI}')
+
 
 
 

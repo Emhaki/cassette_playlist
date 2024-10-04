@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'account',
     'django.contrib.sites',
     'social_django',
+    'corsheaders'
 ]
 
 SITE_ID = 1  # Django의 사이트 프레임워크 사용 시 필요
@@ -63,15 +64,20 @@ REST_FRAMEWORK = {
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 가장 상단에 추가
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.common.CommonMiddleware',  # 다른 미들웨어들 아래에 추가
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'cassette_playlist.urls'
 
