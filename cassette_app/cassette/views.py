@@ -97,7 +97,8 @@ class UserPlaylistsView(generics.ListAPIView):
 
         playlists = Playlist.objects.filter(user_id=user.id)  # 사용자의 플레이리스트 가져오기
         serializer = PlaylistSerializer(playlists, many=True)  # 시리얼라이저로 데이터 직렬화
-        return Response(serializer.data)  # 직렬화된 데이터를 응답으로 반환
+        data = serializer.data
+        return Response(data, status=200)
 
 # 사용자에 대한 모든 플레이리스트에 대한 추천받은 뮤직카드
 class PlaylistsWithRecommendationsByUserView(APIView):
