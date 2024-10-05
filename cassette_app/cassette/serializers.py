@@ -11,7 +11,8 @@ class PlyUserSerializer(serializers.ModelSerializer):
 class PlaylistSerializer(serializers.ModelSerializer):
     user_id = user_uuid = serializers.SerializerMethodField()  # 유저의 id만 직렬화
     user_uuid = serializers.SerializerMethodField()  # 유저의 uuid만 직렬화
-
+    total_songs = serializers.SerializerMethodField()  
+    
     class Meta:
         model = Playlist
         fields = ['id', 'user_id','user_uuid', 'playlist_title', 'playlist_title_other', 'created_at', 'total_songs']  # user 필드로 PlyUser 직렬화, user_id 및 uuid 제외
