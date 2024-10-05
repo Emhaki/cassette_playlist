@@ -94,7 +94,10 @@ class UserPlaylistsView(generics.ListAPIView):
         # user_uuid를 이용해 유저 객체를 찾음
         user = get_object_or_404(PlyUser, uuid=user_uuid)
         # 해당 유저의 모든 플레이리스트 반환
-        return Playlist.objects.filter(user_id=user.id)
+
+        playlists = Playlist.objects.filter(user_id=user.id)  # 사용자의 플레이리스트 가져오기
+        serializer = PlaylistSerializer(playlists, many=True)  # 시리얼라이저로 데이터 직렬화
+        return Response(serializer.data)  # 직렬화된 데이터를 응답으로 반환
 
 # 사용자에 대한 모든 플레이리스트에 대한 추천받은 뮤직카드
 class PlaylistsWithRecommendationsByUserView(APIView):

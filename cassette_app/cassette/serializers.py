@@ -14,8 +14,11 @@ class PlaylistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Playlist
-        fields = ['id', 'user_id','user_uuid', 'playlist_title', 'playlist_title_other', 'created_at']  # user 필드로 PlyUser 직렬화, user_id 및 uuid 제외
-        
+        fields = ['id', 'user_id','user_uuid', 'playlist_title', 'playlist_title_other', 'created_at', 'total_songs']  # user 필드로 PlyUser 직렬화, user_id 및 uuid 제외
+    
+    def get_total_songs(self, obj):
+        return Playlist.objects.filter(playlist_id=obj.id).count()
+
     def get_user_id(self, obj):
             # user_id를 통해 PlyUser의 id만 반환
             return obj.user_id.id
