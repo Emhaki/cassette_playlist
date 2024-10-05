@@ -28,8 +28,8 @@ KAKAO_REDIRECT_URI = 'http://www.perply.site/account/kakao/callback/'
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-def kakao_login(request):
-    return redirect(f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code")
+# def kakao_login(request):
+    # return redirect(f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code")
 
 class KakaoCallbackView(APIView):
     def get(self, request):
