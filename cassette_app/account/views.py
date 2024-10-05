@@ -39,15 +39,15 @@ class KakaoCallbackView(APIView):
             return Response({"error": "카카오 인증 코드가 없습니다."}, status=400)
         
         # code로 access token 요청
-        token_request = requests.get(f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&code={code}")
-        token_response_json = token_request.json()
+        # token_request = requests.get(f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&code={code}")
+        # token_response_json = token_request.json()
 
         print(f"받은 카카오 코드는 {code}")
-        print(token_request)
+        # print(token_request)
         # 에러 발생 시 중단
-        error = token_response_json.get("error", None)
-        if error is not None:
-            return Response({'error': 'Failed to get user info from Kakao.'}, status=status.HTTP_400_BAD_REQUEST)
+        # error = token_response_json.get("error", None)
+        # if error is not None:
+        #     return Response({'error': 'Failed to get user info from Kakao.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # access_token = token_response_json.get("access_token")
         
@@ -58,6 +58,7 @@ class KakaoCallbackView(APIView):
         )
 
         profile_json = profile_request.json()
+        print(profile_json)
         
         kakao_account = profile_json.get('kakao_account')
         profile_image = kakao_account.get('profile', {}).get('profile_image_url', None)
