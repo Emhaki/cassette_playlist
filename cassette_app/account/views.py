@@ -92,16 +92,28 @@ class KakaoCallbackView(APIView):
         if not Playlist.objects.filter(user_id=user):
             # 5개의 기본 플레이리스트 생성
             playlist_titles = [
-                "당신이 떠올리는 그 사람의 풍경, 이 노래로 표현할 수 있다면 어떤 곡일까요?",
-                "당신의 마음속 이야기를 이 노래로 전할 수 있다면, 어떤 곡일까요?",
-                "만약 이 노래가 그 사람을 위한 편지라면, 어떤 마음을 담고 싶나요?",
-                "그 사람과 함께 듣고 싶은 노래가 있다면, 어떤 곡이 떠오르나요?",
-                "당신이 전하고 싶은 마음, 이 노래로 대신할 수 있다면 어떤 곡일까요?"
+                "나를 보면 떠오르는 음악",
+                "나의 첫인상과 닮은 음악 모음",
+                "이 음악은 마치 like 화났을 때의 나",
+                "나의 매력을 음악으로 표현하자면",
+                "사랑을 할 때의 나는 이 음악과 닮았어"
+            ]
+
+            playlist_titles2 = [
+                "너를 보면 떠오르는 음악",
+                "너의 첫인상과 닮은 음악",
+                "화가 났을 때 너의 모습과 닮은 음악",
+                "너의 매력 포인트와 닮은 음악",
+                "사랑을 할 때의 너와 닮은 음악"
             ]
 
             # 처음 회원가입 후 5개 플레이리스트 생성
             for title in playlist_titles:
                 Playlist.objects.create(user_id=user, playlist_title=title)  # user 대신 user_id 사용
+
+            for title2 in playlist_titles2:
+                Playlist.objects.create(user_id=user, playlist_title_other=title2)
+
 
         data = {
             'token': access_token,
@@ -123,6 +135,9 @@ class UpdateNicknameView(APIView):
 
         # request.data에서 닉네임 가져오기
         new_nickname = request.data.get("nickname")
+        if new_nickname and len(new_nickname.encode('utf-8')) > 17:
+            return Response ({"error": "닉네임은 8자를 초과해서 변경할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+            
         if not new_nickname:
             return Response({"error": "닉네임이 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -143,6 +158,10 @@ class UpdateNicknameView(APIView):
                 "nickname": user.nickname
             }, status=status.HTTP_200_OK)
 
+class CurrentURLView(APIView):
+    def get(self, request, *args, **kwargs):
+        current_url = request.build_absolute_uri()  # 현재 요청된 URL을 반환
+        return Response({"current_url": current_url})
 
 # class KakaoLogoutView(APIView):
 #     def kakao_logout(request):

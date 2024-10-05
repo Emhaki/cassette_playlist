@@ -143,7 +143,7 @@ class PlaylistsWithRecommendationsByUserView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-
+# 플레이리스트에 대한 모든 뮤직카드
 class PlaylistWithRecommendationsDetailView(APIView):
     def get(self, request, user_id):
         # Playlist 데이터 가져오기
@@ -227,4 +227,5 @@ class RecommendedPlaylistDetailView(generics.RetrieveAPIView):
         data["current_url"] = current_url
 
         return Response(data)
+
 
