@@ -32,6 +32,6 @@ class RecommendedPlaylistSerializer(serializers.ModelSerializer):
     
     def validate_content(self, value):
         # content 필드의 바이트 길이를 확인하여 250바이트 이하인지 체크
-        if len(value.encode('utf-8')) > 250:
-            raise serializers.ValidationError("Content cannot exceed 250 bytes.")
+        if len(value.encode('utf-8')) >= 250:
+            raise serializers.ValidationError("본문은 250byte를 초과할 수 없습니다.")
         return value
