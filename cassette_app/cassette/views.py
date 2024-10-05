@@ -88,17 +88,12 @@ class RecommendedPlaylistCreateView(generics.CreateAPIView):
 class UserPlaylistsView(generics.ListAPIView):
     serializer_class = PlaylistSerializer
 
-    # 유저의 모든 플레이리스트를 반환하는 메서드
     def get_queryset(self):
         user_uuid = self.kwargs['user_uuid']
         # user_uuid를 이용해 유저 객체를 찾음
         user = get_object_or_404(PlyUser, uuid=user_uuid)
-        # 해당 유저의 모든 플레이리스트 반환
-
-        playlists = Playlist.objects.filter(user_id=user.id)  # 사용자의 플레이리스트 가져오기
-        serializer = PlaylistSerializer(playlists, many=True)  # 시리얼라이저로 데이터 직렬화
-        data = serializer.data
-        return Response(data, status=200)
+        # 해당 유저의 모든 플레이리스트를 반환하는 쿼리셋
+        return Playlist.objects.filter(user_id=user.id)
 
 # 사용자에 대한 모든 플레이리스트에 대한 추천받은 뮤직카드
 class PlaylistsWithRecommendationsByUserView(APIView):
